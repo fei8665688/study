@@ -26,21 +26,18 @@ public class MainPredict {
     // 初始化预处理器
     InputStream isPermitted0 = MainPredict.class
         .getResourceAsStream("/customRule/is_permitted_0_modified.txt");
-    InputStream isPermitted1 = MainPredict.class
-        .getResourceAsStream("/customRule/is_permitted_1_modified.txt");
+
     PreProcessor.buildVocabularyMap(isPermitted0);
-    PreProcessor.buildVocabularyMap(isPermitted1);
 
     PredictModel predictModel = new PredictModel();
-    predictModel.initModel("C:\\zf\\custom\\model2.pb");
+    predictModel.initModel("C:\\zf\\result\\before-dep-is-permitted.pb.2019-08-21");
 
     Set<String> set = PreProcessor.getVocabularyMap().keySet();
 
     List<String> list = Lists.newArrayList(set);
 
 
-    BufferedReader bufferedReader1 = new BufferedReader(new FileReader("C:\\张飞\\study\\src\\main\\resources\\customRule\\is_permitted_0_modified.txt"));
-    BufferedReader bufferedReader2 = new BufferedReader(new FileReader("C:\\张飞\\study\\src\\main\\resources\\customRule\\is_permitted_1_modified.txt"));
+    BufferedReader bufferedReader1 = new BufferedReader(new FileReader("C:\\张飞\\学习\\study\\src\\main\\resources\\customRule\\is_permitted_0_modified.txt"));
 
     String x ;
     while (null != (x = bufferedReader1.readLine())) {
@@ -49,15 +46,6 @@ public class MainPredict {
       if (predictModel.predict(ints) > 0.5) {
         System.out.println("is_permitted_0:"+false);
       }
-    }
-
-    while (null != (x = bufferedReader2.readLine())) {
-      int[][] ints = PreProcessor.buildInputs(x);
-
-      if(predictModel.predict(ints) < 0.5) {
-        System.out.println("is_permitted_1:"+false);
-      }
-
     }
 
 

@@ -18,7 +18,7 @@ import scala.collection.mutable
   * @author phil.zhang
   * @date 2019/7/15
   */
-object SparkStreamingTest {
+object ZKUtilsTest {
 
   def main(args: Array[String]): Unit = {
 //    var session: SparkSession = SparkSession.builder().master("local[2]").appName("kafka-partition-test").getOrCreate()

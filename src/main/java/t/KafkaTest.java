@@ -9,6 +9,7 @@ import com.pkfare.collect.entity.EsLogEntity;
 import com.pkfare.collect.entity.TransData;
 import java.util.Iterator;
 import java.util.Map;
+import javax.security.auth.login.Configuration;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -25,22 +26,6 @@ public class KafkaTest {
 
 
   public static void main(String[] args) {
-/*    KafkaProducer<String, String> producer = KafkaUtil
-        .initProducer("192.168.1.147:9092,192.168.1.148:9092,192.168.1.149:9092",
-            StringSerializer.class, StringSerializer.class);*/
-
-/*    Map<String, Object> params = Maps.newHashMap();
-    params.put("bootstrap.servers", "192.168.1.147:9092,192.168.1.148:9092,192.168.1.149:9092");
-    params.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-    params.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-
-    KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(params);
-
-    ProducerRecord<String, String> record = new ProducerRecord<>("shopping-dwd", "hahah");
-
-    producer.send(record);
-    kafkaProducer.send(record);*/
-
 
     Map<String, Object> params1 = Maps.newHashMap();
     params1.put("bootstrap.servers", "192.168.1.147:9092,192.168.1.148:9092,192.168.1.149:9092");
@@ -48,17 +33,29 @@ public class KafkaTest {
     // 如果已提交的offset时，从提交的offset开始消费；无提交的offset时，从头开始消费
     params1.put("auto.offset.reset", "earliest");
     params1.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-    params1.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+//    params1.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+    params1.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
 
 
-    KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(params1);
-    kafkaConsumer.subscribe(Lists.newArrayList("air-api-pricing-records-dwd"));
-
+    KafkaConsumer<String, byte[]> kafkaConsumer = new KafkaConsumer<>(params1);
+    kafkaConsumer.subscribe(Lists.newArrayList("api-solutions"));
+/*    while (true) {
       ConsumerRecords<String, String> records = kafkaConsumer.poll(1000);
       Iterator<ConsumerRecord<String, String>> iterator = records.iterator();
       while (iterator.hasNext()) {
         System.out.println(iterator.next());
       }
+    }*/
+
+    while (true) {
+      ConsumerRecords<String, byte[]> records = kafkaConsumer.poll(1000);
+      for (ConsumerRecord<String, byte[]> record : records) {
+        TransData transData = ProtoSerializerUtil.deserialize(record.value(), TransData.class);
+        if (transData.getData() instanceof EsLogEntity) {
+          System.out.println(((EsLogEntity) transData.getData()).getContent());
+        }
+      }
+    }
 
   }
 
