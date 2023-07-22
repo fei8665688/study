@@ -20,7 +20,7 @@
     <deeplearning.version>1.0.0-beta4</deeplearning.version>
 
     <scala.binary.version>2.11</scala.binary.version>
-    <spark.version>2.3.1</spark.version>
+    <spark.version>2.4.8</spark.version>
     <kafka.version>0.11.0.0</kafka.version>
     <hbase.version>1.1.1</hbase.version>
     <hadoop.version>2.6.5</hadoop.version>
